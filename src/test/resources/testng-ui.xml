@@ -1,0 +1,18 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- UI-only suite: never submits the login form, needs no credentials -->
+<suite name="Aldun UI Suite" verbose="1">
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
+
+    <test name="Login Module - UI">
+        <groups>
+            <run>
+                <include name="ui"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="tests.LoginTest"/>
+        </classes>
+    </test>
+</suite>

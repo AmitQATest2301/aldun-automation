@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Daily workflow: one browser session, one step per test case.
+     Log in, check out if needed, check in, create an interaction, go to Today, check out.
+     Runs on the LIVE app. Credentials come from config.local.properties. -->
+<suite name="Aldun Daily Workflow" verbose="1">
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
+
+    <test name="Daily Workflow">
+        <classes>
+            <class name="tests.DailyWorkflowTest"/>
+        </classes>
+    </test>
+</suite>

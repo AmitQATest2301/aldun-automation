@@ -1,0 +1,70 @@
+2026-10-13 17:00:59.190 INFO  [main] TestListener - Reports for this run: C:\Users\Qaami\aldun-web-tests\aldun-automation\reports\TestSummary_20261013_170059.html and C:\Users\Qaami\aldun-web-tests\aldun-automation\reports\ExtentReport_20261013_170059.html
+2026-10-13 17:01:00.484 INFO  [main] DriverFactory - Started edge (headless=false), opening https://team.aldun.com/login
+2026-10-13 17:01:04.585 INFO  [main] TestListener - START  openLoginPage
+2026-10-13 17:01:04.791 INFO  [main] TestListener - PASS   openLoginPage
+2026-10-13 17:01:04.823 INFO  [main] TestListener - START  logIn
+2026-10-13 17:01:11.581 INFO  [main] DashboardPage - Dashboard visible at https://team.aldun.com/staff - 'Hello, Test'
+2026-10-13 17:01:11.613 INFO  [main] TestListener - PASS   logIn
+2026-10-13 17:01:11.629 INFO  [main] TestListener - START  checkOutIfAlreadyCheckedIn
+2026-10-13 17:01:11.692 INFO  [main] DashboardPage - Clicking Check out
+2026-10-13 17:01:13.455 INFO  [main] DailyWorkflowTest - Screenshot: C:\Users\Qaami\aldun-web-tests\aldun-automation\screenshots\step3_checked_out_20261013_170113.png
+2026-10-13 17:01:18.037 INFO  [main] DashboardPage - Dashboard visible at https://team.aldun.com/staff - 'Hello, Test'
+2026-10-13 17:01:18.666 INFO  [main] DashboardPage - After check-out, home screen status is 'Not checked in': true
+2026-10-13 17:01:18.666 INFO  [main] TestListener - PASS   checkOutIfAlreadyCheckedIn
+2026-10-13 17:01:18.681 INFO  [main] TestListener - START  checkIn
+2026-10-13 17:01:18.729 INFO  [main] DashboardPage - Clicking Check in
+2026-10-13 17:01:20.871 INFO  [main] DashboardPage - Check-in response received, now at https://team.aldun.com/staff/my-work
+2026-10-13 17:01:20.963 INFO  [main] DailyWorkflowTest - Screenshot: C:\Users\Qaami\aldun-web-tests\aldun-automation\screenshots\step4_checked_in_20261013_170120.png
+2026-10-13 17:01:20.971 INFO  [main] TestListener - PASS   checkIn
+2026-10-13 17:01:20.971 INFO  [main] TestListener - START  openNewInteraction
+2026-10-13 17:01:21.225 INFO  [main] InteractionsListPage - Interactions list shown at https://team.aldun.com/staff/my-work
+2026-10-13 17:01:21.225 INFO  [main] InteractionsListPage - Clicking New interaction
+2026-10-13 17:01:22.960 INFO  [main] TestListener - PASS   openNewInteraction
+2026-10-13 17:01:22.960 INFO  [main] TestListener - START  enterAttenderPhoneNumber
+2026-10-13 17:01:22.960 INFO  [main] InteractionPage - Entering Attender Phone No 9811465840
+2026-10-13 17:01:23.611 INFO  [main] InteractionPage - Clicking Create Interaction
+2026-10-13 17:01:30.721 INFO  [main] InteractionPage - After Create Interaction, URL: https://team.aldun.com/staff/my-work/interaction/edit/?hospitalId=YUKUTRCY&phoneNo=9811465840
+2026-10-13 17:01:30.837 INFO  [main] DailyWorkflowTest - Screenshot: C:\Users\Qaami\aldun-web-tests\aldun-automation\screenshots\step6_phone_entered_20261013_170130.png
+2026-10-13 17:01:30.837 INFO  [main] TestListener - PASS   enterAttenderPhoneNumber
+2026-10-13 17:01:30.837 INFO  [main] TestListener - START  fillPatientDetails
+2026-10-13 17:01:30.916 INFO  [main] CreateInteractionFormPage - Entering Admission Id AD556142
+2026-10-13 17:01:31.458 INFO  [main] CreateInteractionFormPage - Entering UHID UH558440
+2026-10-13 17:01:31.989 INFO  [main] CreateInteractionFormPage - Entering Patient Name Rahul Sharma
+2026-10-13 17:01:32.622 INFO  [main] DailyWorkflowTest - Screenshot: C:\Users\Qaami\aldun-web-tests\aldun-automation\screenshots\step7_patient_details_20261013_170132.png
+2026-10-13 17:01:32.738 INFO  [main] TestListener - PASS   fillPatientDetails
+2026-10-13 17:01:32.742 INFO  [main] TestListener - START  createInteraction
+2026-10-13 17:01:32.744 INFO  [main] CreateInteractionFormPage - Clicking Create
+2026-10-13 17:01:34.418 INFO  [main] CreateInteractionFormPage - Confirmation prompt shown - clicked 'Create anyway'
+2026-10-13 17:01:36.055 INFO  [main] CreateInteractionFormPage - Interaction saved. Now at https://team.aldun.com/staff/my-work/interaction/46a07bde-5356-406b-ab99-9e866ca0d7b6/profile
+2026-10-13 17:01:36.277 INFO  [main] InteractionsListPage - Created interaction is shown on screen
+2026-10-13 17:01:36.371 INFO  [main] DailyWorkflowTest - Screenshot: C:\Users\Qaami\aldun-web-tests\aldun-automation\screenshots\step8_interaction_created_20261013_170136.png
+2026-10-13 17:01:36.387 INFO  [main] TestListener - PASS   createInteraction
+2026-10-13 17:01:36.390 INFO  [main] TestListener - START  goToTodayFromMenu
+2026-10-13 17:01:36.466 INFO  [main] NavigationMenu - Opening the menu (three lines, top-left)
+2026-10-13 17:01:38.625 INFO  [main] NavigationMenu - Clicking 'Today' in the menu
+2026-10-13 17:01:40.354 INFO  [main] DashboardPage - Dashboard visible at https://team.aldun.com/staff - 'Hello, Test'
+2026-10-13 17:01:40.633 INFO  [main] DailyWorkflowTest - Screenshot: C:\Users\Qaami\aldun-web-tests\aldun-automation\screenshots\step9_today_20261013_170140.png
+2026-10-13 17:01:40.634 INFO  [main] TestListener - PASS   goToTodayFromMenu
+2026-10-13 17:01:40.638 INFO  [main] TestListener - START  checkOutAtEndOfDay
+2026-10-13 17:01:40.670 INFO  [main] DashboardPage - Clicking Check out
+2026-10-13 17:01:42.845 INFO  [main] DashboardPage - Dashboard visible at https://team.aldun.com/staff - 'Hello, Test'
+2026-10-13 17:01:42.921 INFO  [main] DashboardPage - After check-out, home screen status is 'Not checked in': true
+2026-10-13 17:01:43.029 INFO  [main] DailyWorkflowTest - Screenshot: C:\Users\Qaami\aldun-web-tests\aldun-automation\screenshots\step10_checked_out_20261013_170142.png
+2026-10-13 17:01:43.030 INFO  [main] TestListener - PASS   checkOutAtEndOfDay
+2026-10-13 17:01:48.534 INFO  [main] DriverFactory - Browser closed
+2026-10-13 17:01:48.845 INFO  [main] TestListener - Test results:
+ID       | Scenario                                                   | Status
+---------+------------------------------------------------------------+----------
+ALD001   | Open the Aldun login page                                  | PASS
+ALD002   | Log in with the correct work email and password            | PASS
+ALD003   | Check out first if already checked in                      | PASS
+ALD004   | Check in for the day                                       | PASS
+ALD005   | Open a new interaction from the Interactions list          | PASS
+ALD006   | Enter the attender phone number and continue               | PASS
+ALD007   | Fill in patient details (Admission Id, UHID, Patient Name) | PASS
+ALD008   | Create the interaction and see it saved                    | PASS
+ALD009   | Go back to Today using the menu                            | PASS
+ALD010   | Check out at the end of the day                            | PASS
+
+2026-10-13 17:01:48.846 INFO  [main] TestListener - Summary report written: C:\Users\Qaami\aldun-web-tests\aldun-automation\reports\TestSummary_20261013_170059.html
+2026-10-13 17:01:48.889 INFO  [main] TestListener - Opened report in the default browser: C:\Users\Qaami\aldun-web-tests\aldun-automation\reports\TestSummary_20261013_170059.html

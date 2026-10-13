@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Positive test cases only. Includes the valid login, which needs ALDUN_EMAIL / ALDUN_PASSWORD
+     (it is reported as SKIP when they are not set). No wrong-password attempts. -->
+<suite name="Aldun Positive Suite" verbose="1">
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
+
+    <test name="Login Module - Positive">
+        <groups>
+            <run>
+                <include name="positive"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="tests.LoginTest"/>
+        </classes>
+    </test>
+</suite>

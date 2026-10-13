@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Full regression: UI checks + real login attempts (auth tests need ALDUN_EMAIL / ALDUN_PASSWORD) -->
+<suite name="Aldun Regression Suite" verbose="1">
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
+
+    <test name="Login Module">
+        <classes>
+            <class name="tests.LoginTest"/>
+        </classes>
+    </test>
+</suite>
