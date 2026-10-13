@@ -20,14 +20,24 @@ public class WaitUtils {
 
     public WaitUtils(WebDriver driver, int timeoutSeconds) {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
+        // The app re-renders often; an element replaced mid-check is simply looked up again
+        this.wait.ignoring(org.openqa.selenium.StaleElementReferenceException.class);
     }
 
+    /*
+     * The app keeps earlier screens in the page (hidden) after navigating, so the FIRST match of
+     * a locator can be an invisible copy from a previous screen (seen 2026-10-13: "Attender Phone No"
+     * and "New interaction"). These waits therefore return the first VISIBLE match.
+     */
+
     public WebElement waitForVisible(By locator) {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        return wait.until(driver -> driver.findElements(locator).stream()
+                .filter(WebElement::isDisplayed).findFirst().orElse(null));
     }
 
     public WebElement waitForClickable(By locator) {
-        return wait.until(ExpectedConditions.elementToBeClickable(locator));
+        return wait.until(driver -> driver.findElements(locator).stream()
+                .filter(e -> e.isDisplayed() && e.isEnabled()).findFirst().orElse(null));
     }
 
     /** True once the element is gone or hidden. */
