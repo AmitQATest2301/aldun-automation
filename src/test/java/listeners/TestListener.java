@@ -148,7 +148,21 @@ public class TestListener implements ITestListener, ISuiteListener {
 
     private static void record(ITestResult result, Status status, String message, String screenshot) {
         long duration = Math.max(0, result.getEndMillis() - result.getStartMillis());
-        summary.add(scenarioOf(result), displayName(result), status, duration, message, screenshot);
+        TestCase tc = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestCase.class);
+        String type = tc == null ? "" : tc.type().label();
+        String steps = tc == null ? "" : tc.steps();
+        String expected = tc == null ? "" : tc.expected();
+        String fixedId = tc == null ? "" : tc.id();
+        summary.add(fixedId, scenarioOf(result), type, steps, expected, displayName(result), status, duration,
+                friendly(message), screenshot);
+    }
+
+    /** Turns TestNG's dependency-skip message into plain English. */
+    private static String friendly(String message) {
+        if (message != null && message.contains("depends on not successfully finished methods")) {
+            return "Not run because an earlier step it depends on did not pass";
+        }
+        return message;
     }
 
     /** Readable scenario: the DataProvider row name if any, otherwise the @Test description. */

@@ -54,6 +54,29 @@ public class InteractionsListPage extends BasePage {
         }
     }
 
+    /** Search box, placeholder "Phone, Adm ID, UHID or Name" (seen 2026-10-13). */
+    private final By searchBox = By.xpath("//input[contains(@placeholder, 'Phone, Adm ID')]");
+
+    public boolean isSearchBoxDisplayed() {
+        return isDisplayed(searchBox);
+    }
+
+    /** Types into the search box at the top of the list. */
+    public InteractionsListPage search(String text) {
+        LOG.info("Searching interactions for '{}'", text);
+        type(searchBox, text);
+        return this;
+    }
+
+    /** True once the given text is no longer anywhere on the screen (e.g. filtered out by a search). */
+    public boolean isTextGone(String text) {
+        try {
+            return wait.until(d -> !getPageText().contains(text));
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
     /** Opens the New Interaction form. */
     public InteractionPage clickNewInteraction() {
         LOG.info("Clicking New interaction");

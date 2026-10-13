@@ -1,13 +1,32 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<!-- Full regression: UI checks + real login attempts (auth tests need ALDUN_EMAIL / ALDUN_PASSWORD) -->
-<suite name="Aldun Regression Suite" verbose="1">
+<!-- Full regression: positive, negative and edge test cases, in a sensible order.
+     Each <test> uses its own browser session (opened once, closed at the end of that block).
+     Runs on the LIVE app: checks in/out and creates real interactions.
+     Credentials come from config.local.properties. -->
+<suite name="Aldun Full Regression" verbose="1">
     <listeners>
         <listener class-name="listeners.TestListener"/>
     </listeners>
 
-    <test name="Login Module">
-        <classes>
-            <class name="tests.LoginTest"/>
-        </classes>
+    <test name="1. Login screen" preserve-order="true">
+        <classes><class name="tests.LoginPageTest"/></classes>
+    </test>
+    <test name="2. Pages need login" preserve-order="true">
+        <classes><class name="tests.AccessControlTest"/></classes>
+    </test>
+    <test name="3. Login attempts" preserve-order="true">
+        <classes><class name="tests.LoginAttemptTest"/></classes>
+    </test>
+    <test name="4. Daily workflow" preserve-order="true">
+        <classes><class name="tests.DailyWorkflowTest"/></classes>
+    </test>
+    <test name="5. Interaction form checks" preserve-order="true">
+        <classes><class name="tests.InteractionValidationTest"/></classes>
+    </test>
+    <test name="6. Interaction search" preserve-order="true">
+        <classes><class name="tests.InteractionSearchTest"/></classes>
+    </test>
+    <test name="7. Menu and log out" preserve-order="true">
+        <classes><class name="tests.MenuAndLogoutTest"/></classes>
     </test>
 </suite>

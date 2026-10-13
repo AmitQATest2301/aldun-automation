@@ -49,6 +49,30 @@ public class LoginPage extends BasePage {
         click(loginButton);
     }
 
+    /** Types the email exactly as given, without checking it (the app may trim spaces). */
+    public LoginPage enterEmailAsTyped(String email) {
+        typeRaw(emailInput, email);
+        return this;
+    }
+
+    /**
+     * Clicks Log in several times as fast as possible (edge case: impatient double-clicking).
+     * Stops early if the button disappears because the app already moved on.
+     */
+    public void clickLoginRepeatedly(int times) {
+        WebElement button = wait.waitForClickable(loginButton);
+        for (int i = 1; i <= times; i++) {
+            try {
+                button.click();
+            } catch (org.openqa.selenium.StaleElementReferenceException
+                     | org.openqa.selenium.ElementNotInteractableException e) {
+                LOG.info("Log in button gone after {} click(s) - app already moved on", i - 1);
+                return;
+            }
+        }
+        LOG.info("Clicked Log in {} times", times);
+    }
+
     /** Fills both fields and clicks Log in. */
     public void login(String email, String password) {
         enterEmail(email);
@@ -111,6 +135,25 @@ public class LoginPage extends BasePage {
     public boolean isOnLoginPage() {
         return driver.getCurrentUrl().contains(ConfigReader.get("loginPath"))
                 && isEmailFieldDisplayed();
+    }
+
+    /**
+     * After a failed login, waits for the page to show something new (an error message,
+     * wherever the app puts it) and returns the new text. Empty string if nothing appears.
+     */
+    public String waitForNewMessage(String pageTextBefore) {
+        try {
+            wait.until(d -> !getPageText().equals(pageTextBefore));
+        } catch (TimeoutException e) {
+            LOG.warn("No new message appeared on the login page");
+            return "";
+        }
+        java.util.Set<String> before = new java.util.HashSet<>(java.util.Arrays.asList(pageTextBefore.split("\\R")));
+        String added = java.util.Arrays.stream(getPageText().split("\\R"))
+                .filter(line -> !line.isBlank() && !before.contains(line))
+                .collect(java.util.stream.Collectors.joining(" | "));
+        LOG.info("Message shown: '{}'", added);
+        return added;
     }
 
     /** Text currently in the toast area, without waiting. Empty string when nothing is shown. */

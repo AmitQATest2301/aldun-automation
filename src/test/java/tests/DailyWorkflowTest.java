@@ -13,6 +13,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import base.DriverFactory;
+import listeners.TestCase;
+import listeners.TestCase.Type;
 import pages.CreateInteractionFormPage;
 import pages.DashboardPage;
 import pages.InteractionPage;
@@ -53,6 +55,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 1
     @Test(priority = 1, groups = {"auth", "positive"},
             description = "Open the Aldun login page")
+    @TestCase(type = Type.POSITIVE,
+            steps = "Launch the app and verify the login screen.",
+            expected = "Login screen should be displayed.")
     public void openLoginPage() {
         assertTrue(loginPage.isEmailFieldDisplayed(), "Work email box is not shown");
         assertTrue(loginPage.isPasswordFieldDisplayed(), "Password box is not shown");
@@ -62,6 +67,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 2
     @Test(priority = 2, groups = {"auth", "positive"}, dependsOnMethods = "openLoginPage",
             description = "Log in with the correct work email and password")
+    @TestCase(type = Type.POSITIVE,
+            steps = "Enter the correct work email and password, show the password, and click Log in.",
+            expected = "User logs in and the home screen shows Hello, Test.")
     public void logIn() {
         String email = TestData.resolve(TestData.VALID_EMAIL);
         String password = TestData.resolve(TestData.VALID_PASSWORD);
@@ -79,6 +87,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 3
     @Test(priority = 3, groups = {"auth", "positive"}, dependsOnMethods = "logIn",
             description = "Check out first if already checked in")
+    @TestCase(type = Type.POSITIVE,
+            steps = "If the status says Checked in, click Check out.",
+            expected = "Status shows Not checked in (nothing to do if already checked out).")
     public void checkOutIfAlreadyCheckedIn() throws IOException {
         if (home.isNotCheckedIn()) {
             LOG.info("Status is already 'Not checked in' - nothing to check out");
@@ -92,6 +103,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 4
     @Test(priority = 4, groups = {"auth", "positive"}, dependsOnMethods = "checkOutIfAlreadyCheckedIn",
             description = "Check in for the day")
+    @TestCase(type = Type.POSITIVE,
+            steps = "Click Check in.",
+            expected = "Check-in completes and the Interactions list opens.")
     public void checkIn() throws IOException {
         assertTrue(home.isCheckInButtonDisplayed(), "Check in button is not shown");
         home.clickCheckIn();
@@ -103,6 +117,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 5
     @Test(priority = 5, groups = {"auth", "positive"}, dependsOnMethods = "checkIn",
             description = "Open a new interaction from the Interactions list")
+    @TestCase(type = Type.POSITIVE,
+            steps = "On the Interactions list, click New interaction.",
+            expected = "The New Interaction screen opens with Attender Phone No.")
     public void openNewInteraction() {
         InteractionsListPage list = new InteractionsListPage(driver);
         assertTrue(list.isLoaded(), "Interactions list did not open after Check in");
@@ -113,6 +130,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 6
     @Test(priority = 6, groups = {"auth", "positive"}, dependsOnMethods = "openNewInteraction",
             description = "Enter the attender phone number and continue")
+    @TestCase(type = Type.POSITIVE,
+            steps = "Enter 9811465840 in Attender Phone No and click Create Interaction (Create anyway if asked).",
+            expected = "The number history is shown and the Create New Interaction form opens.")
     public void enterAttenderPhoneNumber() throws IOException {
         newInteraction.enterAttenderPhoneNumber(TestData.INTERACTION_CONTACT_NUMBER);
         String typed = newInteraction.getAttenderPhoneNumber().replaceAll("\\D", "");
@@ -130,6 +150,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 7
     @Test(priority = 7, groups = {"auth", "positive"}, dependsOnMethods = "enterAttenderPhoneNumber",
             description = "Fill in patient details (Admission Id, UHID, Patient Name)")
+    @TestCase(type = Type.POSITIVE,
+            steps = "Enter Admission Id AD556142, UHID UH558440 and Patient Name Rahul Sharma.",
+            expected = "All three values are entered correctly.")
     public void fillPatientDetails() throws IOException {
         patientForm = new CreateInteractionFormPage(driver);
         assertTrue(patientForm.isLoaded(), "'Create New Interaction' form is not shown");
@@ -146,6 +169,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 8
     @Test(priority = 8, groups = {"auth", "positive"}, dependsOnMethods = "fillPatientDetails",
             description = "Create the interaction and see it saved")
+    @TestCase(type = Type.POSITIVE,
+            steps = "Click Create (and Create anyway if asked).",
+            expected = "The interaction is saved and shown with Rahul Sharma and 9811465840.")
     public void createInteraction() throws IOException {
         patientForm.clickCreate();
         patientForm.confirmIfAsked(); // same patient already exists: Create anyway
@@ -160,6 +186,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 9
     @Test(priority = 9, groups = {"auth", "positive"}, dependsOnMethods = "createInteraction",
             description = "Go back to Today using the menu")
+    @TestCase(type = Type.POSITIVE,
+            steps = "Click the three lines in the top-left corner, then click Today.",
+            expected = "The home screen opens and the status shows Checked in.")
     public void goToTodayFromMenu() throws IOException {
         home = new NavigationMenu(driver).open().clickToday();
         assertTrue(home.isLoaded(), "Home screen did not open from the menu");
@@ -171,6 +200,9 @@ public class DailyWorkflowTest {
     // ------------------------------------------------------------------ 10
     @Test(priority = 10, groups = {"auth", "positive"}, dependsOnMethods = "goToTodayFromMenu",
             description = "Check out at the end of the day")
+    @TestCase(type = Type.POSITIVE,
+            steps = "Click Check out.",
+            expected = "Status changes to Not checked in.")
     public void checkOutAtEndOfDay() throws IOException {
         assertTrue(home.isCheckOutButtonDisplayed(), "Check out button is not shown");
         home.clickCheckOut();

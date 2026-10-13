@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- The whole process as 20 test cases (ALD001-ALD020) in ONE browser, in ID order:
+     log in -> create interaction -> fill details -> Today -> Interactions -> Check out -> Log out.
+     Runs on the LIVE app: one wrong-password attempt, may check in, creates one interaction, checks out. -->
+<suite name="Aldun End-to-End Process (20 test cases)" verbose="1">
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+        <listener class-name="listeners.RunInIdOrder"/>
+    </listeners>
+
+    <test name="End-to-end process">
+        <classes><class name="tests.EndToEndProcessTest"/></classes>
+    </test>
+</suite>

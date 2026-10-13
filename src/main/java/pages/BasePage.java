@@ -55,6 +55,30 @@ public abstract class BasePage {
     /** Short settle time so the app can react before the typed value is checked. */
     private static final long TYPE_SETTLE_MS = 300;
 
+    /**
+     * Types WITHOUT checking the result - for negative tests where the field is expected
+     * to refuse or change the input (e.g. letters in a phone number field).
+     */
+    protected void typeRaw(By locator, String text) {
+        WebElement field = wait.waitForVisible(locator);
+        field.click();
+        field.sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.DELETE);
+        field.sendKeys(text);
+        WaitUtils.pause(TYPE_SETTLE_MS);
+    }
+
+    /** Opens a path on the app's site, e.g. "/staff" or "/login". */
+    public void openPath(String path) {
+        String base = ConfigReader.get("baseUrl");
+        String origin = base.substring(0, base.indexOf('/', "https://".length()));
+        driver.get(origin + path);
+    }
+
+    /** Visible text of the whole page. */
+    public String getPageText() {
+        return driver.findElement(By.tagName("body")).getText();
+    }
+
     protected boolean isDisplayed(By locator) {
         return wait.waitForVisible(locator).isDisplayed();
     }

@@ -34,6 +34,57 @@ public class InteractionPage extends BasePage {
         super(driver);
     }
 
+    /** Path of the New Interaction screen (seen 2026-10-13). */
+    private static final String PATH = "/staff/my-work/interaction/new";
+    /** The real button element around the "Create Interaction" text, for its enabled state. */
+    private final By createInteractionButtonElement =
+            By.xpath("//button[.//*[normalize-space(text())='Create Interaction']]");
+
+    /** Opens the New Interaction screen directly. */
+    public InteractionPage open() {
+        openPath(PATH);
+        return this;
+    }
+
+    /** Types into Attender Phone No without checking - the field may refuse or trim the input. */
+    public InteractionPage typeAttenderPhoneRaw(String text) {
+        LOG.info("Typing '{}' into Attender Phone No", text);
+        typeRaw(attenderPhoneInput, text);
+        return this;
+    }
+
+    /** True when Create Interaction is greyed out / disabled (checked right now, no waiting). */
+    public boolean isCreateInteractionDisabled() {
+        return driver.findElements(createInteractionButtonElement).stream().findFirst()
+                .map(b -> !b.isEnabled() || "true".equals(b.getDomAttribute("aria-disabled")))
+                .orElse(true);
+    }
+
+    /**
+     * Tries to continue with the current number: clicks Create Interaction if it is active and
+     * reports whether the app moved on to the next form. Returns false when it is disabled
+     * or the app stays on this screen.
+     */
+    public boolean canContinue() {
+        if (isCreateInteractionDisabled()) {
+            LOG.info("Create Interaction is disabled - cannot continue");
+            return false;
+        }
+        String url = driver.getCurrentUrl();
+        click(createInteractionButton);
+        try {
+            new utils.WaitUtils(driver, QUICK_CHECK_SECONDS).until(d -> !d.getCurrentUrl().equals(url));
+            LOG.info("App moved on to {}", driver.getCurrentUrl());
+            return true;
+        } catch (TimeoutException e) {
+            LOG.info("App stayed on the New Interaction screen");
+            return false;
+        }
+    }
+
+    /** How long to watch for the app moving on in negative checks. */
+    private static final int QUICK_CHECK_SECONDS = 5;
+
     public boolean isLoaded() {
         try {
             return isDisplayed(title) && isDisplayed(attenderPhoneInput);

@@ -21,8 +21,25 @@ public final class SummaryReport {
 
     public enum Status { PASS, FAIL, SKIP }
 
-    public record Row(String id, String scenario, String method, Status status,
-                      long durationMs, String message, String screenshot) {
+    /**
+     * One test case: scenario is a short name, type/steps/expected come from @TestCase
+     * (empty when a test has no @TestCase).
+     */
+    public record Row(String id, String scenario, String type, String steps, String expected,
+                      String method, Status status, long durationMs, String message, String screenshot) {
+
+        /** "Passed", "Failed: reason" or "Skipped: reason". */
+        public String actualResult() {
+            return switch (status) {
+                case PASS -> "Passed";
+                case FAIL -> "Failed: " + firstLine(message);
+                case SKIP -> "Skipped: " + firstLine(message);
+            };
+        }
+
+        public String stepsOrScenario() {
+            return steps == null || steps.isBlank() ? scenario : steps;
+        }
     }
 
     private static final DateTimeFormatter DISPLAY =
@@ -36,10 +53,12 @@ public final class SummaryReport {
         this.idPrefix = idPrefix;
     }
 
-    public void add(String scenario, String method, Status status, long durationMs,
-                    String message, String screenshot) {
-        String id = String.format("%s%03d", idPrefix, counter.incrementAndGet());
-        rows.add(new Row(id, scenario, method, status, durationMs, message, screenshot));
+    public void add(String fixedId, String scenario, String type, String steps, String expected, String method,
+                    Status status, long durationMs, String message, String screenshot) {
+        String id = fixedId != null && !fixedId.isBlank()
+                ? fixedId
+                : String.format("%s%03d", idPrefix, counter.incrementAndGet());
+        rows.add(new Row(id, scenario, type, steps, expected, method, status, durationMs, message, screenshot));
     }
 
     public Path write(Path file, String suiteName, LocalDateTime start, LocalDateTime end,
@@ -48,6 +67,7 @@ public final class SummaryReport {
         synchronized (rows) {
             snapshot = new ArrayList<>(rows);
         }
+        snapshot.sort(java.util.Comparator.comparing(Row::id)); // stable order, also for parallel runs
         long passed = snapshot.stream().filter(r -> r.status() == Status.PASS).count();
         long failed = snapshot.stream().filter(r -> r.status() == Status.FAIL).count();
         long skipped = snapshot.stream().filter(r -> r.status() == Status.SKIP).count();
@@ -94,6 +114,10 @@ public final class SummaryReport {
                         border-radius:6px; font-size:12.5px; margin:10px 0 0; }
                   .shot img { max-width:100%; border:1px solid var(--line); border-radius:6px; margin-top:10px; }
                   .empty { color:var(--muted); }
+                  main { max-width:1200px; }
+                  .why { color:var(--muted); font-size:12.5px; margin-top:4px; }
+                  .type { font-size:12px; font-weight:600; padding:2px 8px; border-radius:6px; background:#eef2f7; }
+                  .Negative { background:#fff1e6; } .Edge { background:#efe9fb; }
                   @media (max-width:700px) { main { padding:20px 16px; margin:0; border-radius:0; }
                     .tiles { grid-template-columns:repeat(2,1fr); } }
                 </style></head><body><main>
@@ -133,14 +157,22 @@ public final class SummaryReport {
         if (snapshot.isEmpty()) {
             html.append("<p class=\"empty\">No tests were executed.</p>");
         } else {
-            html.append("<table><thead><tr><th>ID</th><th>Scenario</th><th>Status</th></tr></thead><tbody>");
+            html.append("<table><thead><tr><th>Test Case ID</th><th>Type</th><th>Test Steps</th>"
+                    + "<th>Expected Result</th><th>Actual Result</th></tr></thead><tbody>");
             for (Row r : snapshot) {
                 html.append("<tr><td class=\"num\">").append(r.id()).append("</td>")
+                    .append("<td><span class=\"type ").append(esc(r.type())).append("\">")
+                    .append(esc(r.type())).append("</span></td>")
                     .append("<td title=\"").append(esc(r.method())).append(" (")
                     .append(formatDuration(r.durationMs())).append(")\">")
-                    .append(esc(r.scenario())).append("</td>")
-                    .append("<td class=\"num\"><span class=\"badge ").append(r.status()).append("\">")
-                    .append(statusLabel(r.status())).append("</span></td></tr>");
+                    .append(esc(r.stepsOrScenario())).append("</td>")
+                    .append("<td>").append(esc(r.expected())).append("</td>")
+                    .append("<td><span class=\"badge ").append(r.status()).append("\">")
+                    .append(statusLabel(r.status())).append("</span>");
+                if (r.status() != Status.PASS) {
+                    html.append("<div class=\"why\">").append(esc(firstLine(r.message()))).append("</div>");
+                }
+                html.append("</td></tr>");
             }
             html.append("</tbody></table>");
         }
@@ -153,7 +185,7 @@ public final class SummaryReport {
         for (Row r : problems) {
             String color = r.status() == Status.FAIL ? "var(--fail)" : "var(--skip)";
             html.append("<div class=\"fail-card\"><h3>").append(r.id()).append(" &mdash; ")
-                .append(esc(r.scenario())).append("</h3>")
+                .append(esc(r.stepsOrScenario())).append("</h3>")
                 .append("<p style=\"margin:0 0 6px;color:var(--muted);font-size:13px\">")
                 .append(esc(r.method())).append(" &middot; ").append(formatDuration(r.durationMs())).append("</p>")
                 .append("<div style=\"color:").append(color).append("\">")
@@ -183,24 +215,26 @@ public final class SummaryReport {
         synchronized (rows) {
             snapshot = new ArrayList<>(rows);
         }
+        snapshot.sort(java.util.Comparator.comparing(Row::id)); // stable order, also for parallel runs
         int width = Math.max("Scenario".length(),
                 snapshot.stream().mapToInt(r -> r.scenario().length()).max().orElse(0));
-        String format = "%-8s | %-" + width + "s | %s%n";
-        String rule = "-".repeat(8) + "-+-" + "-".repeat(width) + "-+-" + "-".repeat(9) + System.lineSeparator();
+        String format = "%-8s | %-8s | %-" + width + "s | %s%n";
+        String rule = "-".repeat(8) + "-+-" + "-".repeat(8) + "-+-" + "-".repeat(width) + "-+-" + "-".repeat(9)
+                + System.lineSeparator();
         StringBuilder out = new StringBuilder(System.lineSeparator());
-        out.append(String.format(format, "ID", "Scenario", "Status")).append(rule);
+        out.append(String.format(format, "ID", "Type", "Scenario", "Status")).append(rule);
         for (Row r : snapshot) {
             // plain text: the Windows console cannot render the emoji used in the HTML
-            out.append(String.format(format, r.id(), r.scenario(), r.status().name()));
+            out.append(String.format(format, r.id(), r.type(), r.scenario(), r.status().name()));
         }
         return out.toString();
     }
 
     private static String statusLabel(Status status) {
         return switch (status) {
-            case PASS -> "✅ PASS";
-            case FAIL -> "❌ FAIL";
-            case SKIP -> "⚠️ SKIP";
+            case PASS -> "Ã¢Å“â€¦ PASS";
+            case FAIL -> "Ã¢ÂÅ’ FAIL";
+            case SKIP -> "Ã¢Å¡Â Ã¯Â¸Â SKIP";
         };
     }
 

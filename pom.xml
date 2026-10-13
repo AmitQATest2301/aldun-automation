@@ -28,7 +28,7 @@
         <surefire.plugin.version>3.5.2</surefire.plugin.version>
 
         <!-- Suite file run by "mvn test"; override with -DsuiteXmlFile=... -->
-        <suiteXmlFile>src/test/resources/testng-login.xml</suiteXmlFile>
+        <suiteXmlFile>src/test/resources/testng-20-process.xml</suiteXmlFile>
     </properties>
 
     <dependencies>

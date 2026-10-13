@@ -88,9 +88,7 @@ public class DashboardPage extends BasePage {
 
     /** Opens the staff home screen directly (the app sometimes moves to another screen). */
     public void open() {
-        String base = ConfigReader.get("baseUrl");
-        String origin = base.substring(0, base.indexOf('/', "https://".length()));
-        driver.get(origin + ConfigReader.get("dashboardPath"));
+        openPath(ConfigReader.get("dashboardPath"));
     }
 
     public boolean isLogInteractionButtonDisplayed() {
@@ -224,6 +222,11 @@ public class DashboardPage extends BasePage {
         } catch (TimeoutException e) {
             return false;
         }
+    }
+
+    /** True once the given text appears anywhere on the current screen (case-insensitive). */
+    public boolean isTextShownOnPage(String text) {
+        return isTextShown(text);
     }
 
     private boolean isTextShown(String text) {

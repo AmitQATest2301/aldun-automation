@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- 30 test cases (ALD001-ALD030), run one after another in ID order in ONE browser:
+     the browser is launched once at the start and closed once at the end.
+     Between tests the user is logged out and the login page reopened, so each test starts clean.
+     No check-in/check-out here (covered by the Daily Workflow suite).
+     Runs on the LIVE app: ALD026 creates one real interaction. -->
+<suite name="Aldun 30 Test Cases" verbose="1">
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+        <listener class-name="listeners.RunInIdOrder"/>
+    </listeners>
+
+    <test name="30 test cases">
+        <classes>
+            <class name="tests.cases.LoginScreenCases"/>
+            <class name="tests.cases.LoginCases"/>
+            <class name="tests.cases.InteractionCases"/>
+            <class name="tests.cases.NavigationCases"/>
+        </classes>
+    </test>
+</suite>

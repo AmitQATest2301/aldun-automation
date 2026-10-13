@@ -1,18 +1,14 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<!-- UI-only suite: never submits the login form, needs no credentials -->
-<suite name="Aldun UI Suite" verbose="1">
+<!-- Checks that never log in: login screen and pages that require login. Needs no account. -->
+<suite name="Aldun Login Screen Checks" verbose="1">
     <listeners>
         <listener class-name="listeners.TestListener"/>
     </listeners>
 
-    <test name="Login Module - UI">
-        <groups>
-            <run>
-                <include name="ui"/>
-            </run>
-        </groups>
-        <classes>
-            <class name="tests.LoginTest"/>
-        </classes>
+    <test name="1. Login screen" preserve-order="true">
+        <classes><class name="tests.LoginPageTest"/></classes>
+    </test>
+    <test name="2. Pages need login" preserve-order="true">
+        <classes><class name="tests.AccessControlTest"/></classes>
     </test>
 </suite>

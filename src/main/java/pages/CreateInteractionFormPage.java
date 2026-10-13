@@ -79,6 +79,51 @@ public class CreateInteractionFormPage extends BasePage {
         return valueOf(patientNameInput);
     }
 
+    private final By attenderPhoneInput =
+            By.xpath("//*[starts-with(normalize-space(text()), 'Attender Phone No')]/following::input[1]");
+    /** The real button element around the "Create" text, for its enabled state. */
+    private final By createButtonElement = By.xpath("//button[normalize-space(.)='Create']");
+
+    /** Phone number pre-filled from the previous screen. */
+    public String getAttenderPhoneNumber() {
+        return valueOf(attenderPhoneInput);
+    }
+
+    /** True when the hint "For Onboarding Now, either Admission Id or UHID is required." is shown. */
+    public boolean isOnboardingHintShown() {
+        return getPageText().contains("either Admission Id or UHID is required");
+    }
+
+    /** True when Create is active (it stays greyed out until the required fields are filled). */
+    public boolean isCreateEnabled() {
+        return driver.findElements(createButtonElement).stream().findFirst()
+                .map(b -> b.isEnabled() && !"true".equals(b.getDomAttribute("aria-disabled")))
+                .orElse(false);
+    }
+
+    /** Opens the form directly for a phone number (same URL the app uses after Create Interaction). */
+    public CreateInteractionFormPage open(String phoneNumber) {
+        openPath("/staff/my-work/interaction/edit/?phoneNo=" + phoneNumber);
+        return this;
+    }
+
+    /**
+     * For negative checks: true if, within a few seconds, the app is still on this form
+     * (the interaction was NOT saved).
+     */
+    public boolean stayedOnForm() {
+        try {
+            new WaitUtils(driver, QUICK_CHECK_SECONDS).until(d ->
+                    !d.getCurrentUrl().contains("/interaction/edit") || d.findElements(title).isEmpty());
+            LOG.warn("App left the form - the interaction may have been saved. URL: {}", driver.getCurrentUrl());
+            return false;
+        } catch (TimeoutException e) {
+            return true;
+        }
+    }
+
+    private static final int QUICK_CHECK_SECONDS = 5;
+
     public void clickCreate() {
         LOG.info("Clicking Create");
         click(createButton);
