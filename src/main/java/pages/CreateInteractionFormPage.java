@@ -122,6 +122,19 @@ public class CreateInteractionFormPage extends BasePage {
         }
     }
 
+    /**
+     * For negative checks: true if the app refuses to save. Create staying disabled counts as
+     * refused; if Create is active, it is clicked and the app must stay on the form.
+     */
+    public boolean createIsBlocked() {
+        if (!isCreateEnabled()) {
+            LOG.info("Create is disabled - the interaction cannot be saved");
+            return true;
+        }
+        clickCreate();
+        return stayedOnForm();
+    }
+
     private static final int QUICK_CHECK_SECONDS = 5;
 
     public void clickCreate() {

@@ -92,8 +92,7 @@ public class InteractionCases extends IndependentTest {
     public void patientNameRequired() {
         CreateInteractionFormPage form = patientForm();
         form.enterAdmissionId(TestData.ADMISSION_ID).enterUhid(TestData.UHID).enterPatientName("");
-        form.clickCreate();
-        assertTrue(form.stayedOnForm(), "Interaction was saved without a Patient Name");
+        assertTrue(form.createIsBlocked(), "Interaction was saved without a Patient Name");
     }
 
     @Test(groups = {"auth", "negative"}, description = "Admission Id and UHID both missing")
@@ -103,8 +102,7 @@ public class InteractionCases extends IndependentTest {
     public void admissionIdOrUhidRequired() {
         CreateInteractionFormPage form = patientForm();
         form.enterAdmissionId("").enterUhid("").enterPatientName(TestData.PATIENT_NAME);
-        form.clickCreate();
-        assertTrue(form.stayedOnForm(), "Interaction was saved without Admission Id or UHID");
+        assertTrue(form.createIsBlocked(), "Interaction was saved without Admission Id or UHID");
     }
 
     @Test(groups = {"auth", "positive"}, description = "Create an interaction")

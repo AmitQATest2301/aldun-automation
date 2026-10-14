@@ -85,8 +85,7 @@ public class InteractionValidationTest extends SessionTest {
     public void patientNameRequired() {
         CreateInteractionFormPage form = freshPatientForm();
         form.enterAdmissionId(TestData.ADMISSION_ID).enterUhid(TestData.UHID).enterPatientName("");
-        form.clickCreate();
-        assertTrue(form.stayedOnForm(), "Interaction was saved without a Patient Name");
+        assertTrue(form.createIsBlocked(), "Interaction was saved without a Patient Name");
     }
 
     @Test(priority = 6, groups = {"auth", "negative"}, description = "Admission Id and UHID both missing")
@@ -96,8 +95,7 @@ public class InteractionValidationTest extends SessionTest {
     public void admissionIdOrUhidRequired() {
         CreateInteractionFormPage form = freshPatientForm();
         form.enterAdmissionId("").enterUhid("").enterPatientName(TestData.PATIENT_NAME);
-        form.clickCreate();
-        assertTrue(form.stayedOnForm(), "Interaction was saved without Admission Id or UHID");
+        assertTrue(form.createIsBlocked(), "Interaction was saved without Admission Id or UHID");
     }
 
     @Test(priority = 7, groups = {"auth", "edge"}, description = "UHID only, no Admission Id")
