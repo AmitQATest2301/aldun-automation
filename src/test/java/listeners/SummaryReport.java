@@ -232,9 +232,9 @@ public final class SummaryReport {
 
     private static String statusLabel(Status status) {
         return switch (status) {
-            case PASS -> "Ã¢Å“â€¦ PASS";
-            case FAIL -> "Ã¢ÂÅ’ FAIL";
-            case SKIP -> "Ã¢Å¡Â Ã¯Â¸Â SKIP";
+            case PASS -> "\u2705 PASS";
+            case FAIL -> "\u274C FAIL";
+            case SKIP -> "\u26A0\uFE0F SKIP";
         };
     }
 

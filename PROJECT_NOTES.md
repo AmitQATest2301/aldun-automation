@@ -11,6 +11,7 @@ Git 2.55.0; Eclipse 2026-09. Selenium 4.51.0 (4.27 used Microsoft's retired driv
 |---|---|
 | `mvn clean test` | **Default: testng-20-process.xml** - the positive flow as 20 test cases in one browser |
 | `-DsuiteXmlFile=src/test/resources/testng-30-cases.xml` | 30 independent cases, one browser, logged out between tests |
+| `-DsuiteXmlFile=src/test/resources/testng-50-menu.xml` | 50 menu cases: menu, Admissions, Master Search, Performance, Leaderboard, Reports, Report Issue, Log out (saved run: 50/50 pass, read-only) |
 | `-DsuiteXmlFile=src/test/resources/testng.xml` | Full regression, 48 cases in 7 areas |
 | `-DsuiteXmlFile=src/test/resources/testng-login.xml` | Daily workflow, 10 steps (saved best run: 10/10 pass) |
 | `-DsuiteXmlFile=src/test/resources/testng-create-interaction.xml` | Create Interaction flow, 7 steps |
@@ -30,6 +31,7 @@ Each test describes itself with `@TestCase(id, type, steps, expected)`; `RunInId
 |---|---|---|
 | `tests.EndToEndProcessTest` | one session | ALD001-ALD020 positive flow (log in, check in, new interaction, create, Today, Interactions, check out, log out) |
 | `tests.cases.*` (LoginScreenCases, LoginCases, InteractionCases, NavigationCases) | one browser for all (`IndependentTest`) | ALD001-ALD030 |
+| `tests.cases.MenuCases` | one session, each screen opened once | ALD001-ALD050 menu and its screens (page object `MenuScreens`) |
 | `tests.DailyWorkflowTest` | one session | 10-step daily workflow |
 | `tests.CreateInteractionFlowTest` | one session (`SessionTest`) | 7-step create flow |
 | `tests.LoginPageTest`, `AccessControlTest`, `LoginAttemptTest`, `InteractionValidationTest`, `InteractionSearchTest`, `MenuAndLogoutTest` | one session per class | full regression |

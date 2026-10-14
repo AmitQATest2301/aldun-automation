@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- 50 test cases (ALD001-ALD050) for the side menu and every screen it opens:
+     Admissions, Master Search, Performance, Leaderboard, Reports, Report Issue, then Log out.
+     ONE browser, logged in once, run in ID order. Read-only on the LIVE app:
+     nothing is submitted, generated or downloaded. -->
+<suite name="Aldun 50 Menu Test Cases" verbose="1">
+    <listeners>
+        <listener class-name="listeners.TestListener"/>
+        <listener class-name="listeners.RunInIdOrder"/>
+    </listeners>
+
+    <test name="50 menu test cases">
+        <classes>
+            <class name="tests.cases.MenuCases"/>
+        </classes>
+    </test>
+</suite>

@@ -121,9 +121,48 @@ public class NavigationMenu extends BasePage {
         click(menuItem(label));
     }
 
+    /**
+     * Full text of a menu item's button, including any badge - e.g. "Report Issue 29"
+     * (the unread count shown next to Report Issue). Whitespace is collapsed to single spaces.
+     */
+    public String getItemText(String label) {
+        By button = By.xpath("(" + menuItemXpath(label) + ")[1]/ancestor-or-self::*[self::button or @role='button'][1]");
+        return wait.waitForVisible(button).getText().replaceAll("\\s+", " ").trim();
+    }
+
+    /** Quick check, no waiting: true if the menu is open right now. */
+    public boolean isOpenNow() {
+        return driver.findElements(logOutButton).stream().anyMatch(WebElement::isDisplayed);
+    }
+
+    /** Opens the menu only if it is not already open. */
+    public NavigationMenu ensureOpen() {
+        return isOpenNow() ? this : open();
+    }
+
+    /** Vertical position of each menu item, in the order given - used to check the menu order. */
+    public java.util.List<Integer> itemTops(java.util.List<String> labels) {
+        return labels.stream().map(l -> wait.waitForVisible(menuItem(l)).getLocation().getY()).toList();
+    }
+
+    /** Clicks the X ("Close menu") and returns true once the menu has closed. */
+    public boolean close() {
+        LOG.info("Closing the menu");
+        click(By.xpath("//*[@aria-label='Close menu']"));
+        try {
+            return wait.waitForInvisible(logOutButton);
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
     private static By menuItem(String label) {
-        return By.xpath("//*[normalize-space(text())='Log out']"
+        return By.xpath(menuItemXpath(label));
+    }
+
+    private static String menuItemXpath(String label) {
+        return "//*[normalize-space(text())='Log out']"
                 + "/ancestor::*[.//*[normalize-space(text())='Admissions']][1]"
-                + "//*[normalize-space(text())='" + label + "']");
+                + "//*[normalize-space(text())='" + label + "']";
     }
 }
